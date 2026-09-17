@@ -1,5 +1,5 @@
 package com.back.shared.post.dto;
-import com.back.boundedContext.post.entity.PostComment;
+import com.back.boundedContext.post.domain.PostComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
