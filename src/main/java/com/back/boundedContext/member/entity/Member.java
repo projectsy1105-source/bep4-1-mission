@@ -3,10 +3,12 @@ package com.back.boundedContext.member.entity;
 import com.back.global.entity.BaseIdAndTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Member extends BaseIdAndTime {
     @Column(unique = true)
     private String username;
@@ -19,6 +21,7 @@ public class Member extends BaseIdAndTime {
         this.password = password;
         this.nickname = nickname;
     }
+
     public int increaseActivityScore(int amount) {
         return this.activityScore += amount;
     }

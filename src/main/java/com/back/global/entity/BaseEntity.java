@@ -1,5 +1,7 @@
 package com.back.global.entity;
 
+import com.back.global.global.GlobalConfig;
+import com.back.shared.post.event.PostCommentCreatedEvent;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 
@@ -17,5 +19,9 @@ public abstract class BaseEntity {
 
     public String getModelTypeCode() {
         return this.getClass().getSimpleName();
+    }
+
+    protected void publishEvent(Object event) {
+        GlobalConfig.getEventPublisher().publisher(event);
     }
 }

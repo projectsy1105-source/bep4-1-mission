@@ -91,5 +91,6 @@ public class DataInit {
         post3.addComment(user3Member, "댓글7");
 
         post4.addComment(user1Member, "댓글8");
+        post5.addComment(user1Member, "댓글9");
     }
 }
