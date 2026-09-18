@@ -2,17 +2,11 @@ package com.back.boundedContext.member.app;
 
 import com.back.boundedContext.member.domain.Member;
 import com.back.boundedContext.member.domain.MemberPolicy;
-import com.back.boundedContext.post.out.PostRepository;
-import com.back.global.exception.DomainException;
 import com.back.boundedContext.member.out.MemberRepository;
 import com.back.global.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.Optional;
 
 @Service
@@ -31,7 +25,8 @@ public class MemberFacade {
         return memberJoinUseCase.join(username, password, nickname);
     }
 
-    public String randomTip(int memberId) {
+    public String randomTip() {
+//        public String randomTip(int memberId) {
 //        Member member = memberRepository.findById(memberId).get();
 //        int dday = memberPolicy.getPasswordChangeDays() - Period.between(member.getModifyDate().toLocalDate(), LocalDate.now()).getDays();
         return "비밀번호의 유효기간은 %d일 입니다.".formatted(memberPolicy.getPasswordChangeDays());
