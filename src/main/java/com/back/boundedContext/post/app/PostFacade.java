@@ -9,6 +9,7 @@ import com.back.shared.post.dto.PostDto;
 import com.back.shared.post.event.PostCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class PostFacade {
     private final PostRepository postRepository;
     private final PostWriteUseCase postWriteUseCase;
 
+    @Transactional(readOnly = true)
     public long count() {
         return postRepository.count();
     }

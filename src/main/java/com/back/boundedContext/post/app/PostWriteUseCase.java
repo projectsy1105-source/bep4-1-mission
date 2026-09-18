@@ -1,6 +1,8 @@
 package com.back.boundedContext.post.app;
 
+import com.back.boundedContext.member.app.MemberFacade;
 import com.back.boundedContext.member.domain.Member;
+import com.back.boundedContext.member.out.MemberRepository;
 import com.back.boundedContext.post.domain.Post;
 import com.back.boundedContext.post.out.PostRepository;
 import com.back.global.eventPublisher.EventPublisher;
@@ -16,13 +18,15 @@ public class PostWriteUseCase {
 
     private final PostRepository postRepository;
     private final EventPublisher eventPublisher;
+    private final MemberFacade  memberFacade;
 
     public RsData<Post> write(Member author, String title, String content) {
         Post post = new Post(author, title, content);
         postRepository.save(post);
 
         eventPublisher.publisher(new PostCreatedEvent(new PostDto(post)));
+        String tip = memberFacade.randomTip(author.getId());
 
-        return new RsData<>("201-1", "%d번 글이 생성되었습니다.".formatted(post.getId()), post);
+        return new RsData<>("201-1", "%d번 글이 생성되었습니다. 보안 팁 : %s".formatted(post.getId(), tip), post);
     }
 }
