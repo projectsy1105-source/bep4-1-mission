@@ -2,9 +2,6 @@ package com.back.boundedContext.member.in;
 
 import com.back.boundedContext.member.app.MemberFacade;
 import com.back.boundedContext.member.domain.Member;
-import com.back.global.eventPublisher.EventPublisher;
-import com.back.shared.member.dto.MemberDto;
-import com.back.shared.member.event.MemberModifiedEvent;
 import com.back.shared.post.event.PostCommentCreatedEvent;
 import com.back.shared.post.event.PostCreatedEvent;
 import lombok.RequiredArgsConstructor;
