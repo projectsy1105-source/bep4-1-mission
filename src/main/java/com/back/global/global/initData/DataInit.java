@@ -4,6 +4,7 @@ import com.back.boundedContext.member.app.MemberFacade;
 import com.back.boundedContext.member.domain.Member;
 import com.back.boundedContext.post.domain.Post;
 import com.back.boundedContext.post.app.PostFacade;
+import com.back.boundedContext.post.domain.PostMember;
 import com.back.global.global.RsData.RsData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -58,12 +59,16 @@ public class DataInit {
         Member user2Member = memberFacade.findByUsername("user2").get();
         Member user3Member = memberFacade.findByUsername("user3").get();
 
-        RsData<Post> post1 = postFacade.write(user1Member, "제목1", "내용1"); log.debug(post1.getMsg());
-        RsData<Post> post2 = postFacade.write(user1Member, "제목2", "내용2"); log.debug(post2.getMsg());
-        RsData<Post> post3 = postFacade.write(user1Member, "제목3", "내용3"); log.debug(post3.getMsg());
-        RsData<Post> post4 = postFacade.write(user2Member, "제목4", "내용4"); log.debug(post4.getMsg());
-        RsData<Post> post5 = postFacade.write(user2Member, "제목5", "내용5"); log.debug(post5.getMsg());
-        RsData<Post> post6 = postFacade.write(user3Member, "제목6", "내용6"); log.debug(post6.getMsg());
+        PostMember user1 = postFacade.findPostMember (user1Member.getUsername()).get();
+        PostMember user2 = postFacade.findPostMember (user2Member.getUsername()).get();
+        PostMember user3 = postFacade.findPostMember (user3Member.getUsername()).get();
+
+        RsData<Post> post1 = postFacade.write(user1, "제목1", "내용1"); log.debug(post1.getMsg());
+        RsData<Post> post2 = postFacade.write(user1, "제목2", "내용2"); log.debug(post2.getMsg());
+        RsData<Post> post3 = postFacade.write(user1, "제목3", "내용3"); log.debug(post3.getMsg());
+        RsData<Post> post4 = postFacade.write(user2, "제목4", "내용4"); log.debug(post4.getMsg());
+        RsData<Post> post5 = postFacade.write(user2, "제목5", "내용5"); log.debug(post5.getMsg());
+        RsData<Post> post6 = postFacade.write(user3, "제목6", "내용6"); log.debug(post6.getMsg());
     }
 
     @Transactional
@@ -75,9 +80,9 @@ public class DataInit {
         Post post5 = postFacade.findById(5).get();
         Post post6 = postFacade.findById(6).get();
 
-        Member user1Member = memberFacade.findByUsername("user1").get();
-        Member user2Member = memberFacade.findByUsername("user2").get();
-        Member user3Member = memberFacade.findByUsername("user3").get();
+        PostMember user1Member = postFacade.findPostMember("user1").get();
+        PostMember user2Member = postFacade.findPostMember("user2").get();
+        PostMember user3Member = postFacade.findPostMember("user3").get();
 
         if (post1.hasComments()) return;
 

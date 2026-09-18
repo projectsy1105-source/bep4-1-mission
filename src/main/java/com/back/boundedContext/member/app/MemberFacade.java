@@ -6,6 +6,7 @@ import com.back.boundedContext.member.out.MemberRepository;
 import com.back.global.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,10 +18,12 @@ public class MemberFacade {
     private final MemberJoinUseCase memberJoinUseCase;
     private final MemberPolicy memberPolicy;
 
+    @Transactional(readOnly = true)
     public long count() {
         return memberRepository.count();
     }
 
+    @Transactional
     public RsData<Member> join(String username, String password, String nickname) {
         return memberJoinUseCase.join(username, password, nickname);
     }
@@ -32,8 +35,10 @@ public class MemberFacade {
         return "비밀번호의 유효기간은 %d일 입니다.".formatted(memberPolicy.getPasswordChangeDays());
     }
 
+    @Transactional
     public Optional<Member> findById(int id) { return memberRepository.findById(id); }
 
+    @Transactional(readOnly = true)
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
