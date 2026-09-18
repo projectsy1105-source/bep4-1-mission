@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "POST_MEMBER")
@@ -13,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class PostMember extends ReplicaMember {
 
-    public PostMember(String username, String password, String nickname) {
-        super(username, password, nickname);
+    public PostMember(String username, String password, String nickname, int activityScore) {
+        super(username, password, nickname, activityScore);
     }
 
 }
