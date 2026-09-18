@@ -1,4 +1,4 @@
-package com.back.global.initData;
+package com.back.global.global.initData;
 
 import com.back.boundedContext.member.app.MemberFacade;
 import com.back.boundedContext.member.domain.Member;
@@ -41,12 +41,12 @@ public class DataInit {
     public void makeBaseMembers() {
         if (memberFacade.count() > 0) return;
 
-        Member systemMember = memberFacade.join("system", "1234", "시스템");
-        Member holdingMember = memberFacade.join("holding", "1234", "홀딩");
-        Member adminMember = memberFacade.join("admin", "1234", "관리자");
-        Member user1Member = memberFacade.join("user1", "1234", "유저1");
-        Member user2Member = memberFacade.join("user2", "1234", "유저2");
-        Member user3Member = memberFacade.join("user3", "1234", "유저3");
+        Member systemMember = memberFacade.join("system", "1234", "시스템").getData();
+        Member holdingMember = memberFacade.join("holding", "1234", "홀딩").getData();
+        Member adminMember = memberFacade.join("admin", "1234", "관리자").getData();
+        Member user1Member = memberFacade.join("user1", "1234", "유저1").getData();
+        Member user2Member = memberFacade.join("user2", "1234", "유저2").getData();
+        Member user3Member = memberFacade.join("user3", "1234", "유저3").getData();
     }
 
     @Transactional
@@ -57,12 +57,12 @@ public class DataInit {
         Member user2Member = memberFacade.findByUsername("user2").get();
         Member user3Member = memberFacade.findByUsername("user3").get();
 
-        Post post1 = postFacade.write(user1Member, "제목1", "내용1");
-        Post post2 = postFacade.write(user1Member, "제목2", "내용2");
-        Post post3 = postFacade.write(user1Member, "제목3", "내용3");
-        Post post4 = postFacade.write(user2Member, "제목4", "내용4");
-        Post post5 = postFacade.write(user2Member, "제목5", "내용5");
-        Post post6 = postFacade.write(user3Member, "제목6", "내용6");
+        Post post1 = postFacade.write(user1Member, "제목1", "내용1").getData();
+        Post post2 = postFacade.write(user1Member, "제목2", "내용2").getData();
+        Post post3 = postFacade.write(user1Member, "제목3", "내용3").getData();
+        Post post4 = postFacade.write(user2Member, "제목4", "내용4").getData();
+        Post post5 = postFacade.write(user2Member, "제목5", "내용5").getData();
+        Post post6 = postFacade.write(user3Member, "제목6", "내용6").getData();
     }
 
     @Transactional
