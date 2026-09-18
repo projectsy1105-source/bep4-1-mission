@@ -1,9 +1,9 @@
-package com.back.global.global.initData;
+package com.back.boundedContext.post.in;
 
 import com.back.boundedContext.member.app.MemberFacade;
 import com.back.boundedContext.member.domain.Member;
-import com.back.boundedContext.post.domain.Post;
 import com.back.boundedContext.post.app.PostFacade;
+import com.back.boundedContext.post.domain.Post;
 import com.back.boundedContext.post.domain.PostMember;
 import com.back.global.global.RsData.RsData;
 import lombok.extern.slf4j.Slf4j;
@@ -11,57 +11,39 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @Slf4j
-public class DataInit {
-    private final DataInit self;
-    private final MemberFacade memberFacade;
+public class PostDataInit {
+    private final PostDataInit self;
     private final PostFacade postFacade;
 
-    public DataInit(
-            @Lazy DataInit self,
-            MemberFacade memberFacade,
+    public PostDataInit(
+            @Lazy PostDataInit self,
             PostFacade postFacade
     ) {
         this.self = self;
-        this.memberFacade = memberFacade;
         this.postFacade = postFacade;
     }
 
     @Bean
-    public ApplicationRunner baseInitDataRunner() {
+    @Order(2)
+    public ApplicationRunner PostBaseInitDataRunner() {
         return args -> {
-            self.makeBaseMembers();
             self.makeBasePosts();
             self.makeBasePostComments();
         };
     }
 
     @Transactional
-    public void makeBaseMembers() {
-        if (memberFacade.count() > 0) return;
-
-        Member systemMember = memberFacade.join("system", "1234", "시스템").getData();
-        Member holdingMember = memberFacade.join("holding", "1234", "홀딩").getData();
-        Member adminMember = memberFacade.join("admin", "1234", "관리자").getData();
-        Member user1Member = memberFacade.join("user1", "1234", "유저1").getData();
-        Member user2Member = memberFacade.join("user2", "1234", "유저2").getData();
-        Member user3Member = memberFacade.join("user3", "1234", "유저3").getData();
-    }
-
-    @Transactional
     public void makeBasePosts() {
         if (postFacade.count() > 0) return;
 
-        Member user1Member = memberFacade.findByUsername("user1").get();
-        Member user2Member = memberFacade.findByUsername("user2").get();
-        Member user3Member = memberFacade.findByUsername("user3").get();
-
-        PostMember user1 = postFacade.findPostMember (user1Member.getUsername()).get();
-        PostMember user2 = postFacade.findPostMember (user2Member.getUsername()).get();
-        PostMember user3 = postFacade.findPostMember (user3Member.getUsername()).get();
+        PostMember user1 = postFacade.findPostMember ("user1").get();
+        PostMember user2 = postFacade.findPostMember ("user2").get();
+        PostMember user3 = postFacade.findPostMember ("user3").get();
 
         RsData<Post> post1 = postFacade.write(user1, "제목1", "내용1"); log.debug(post1.getMsg());
         RsData<Post> post2 = postFacade.write(user1, "제목2", "내용2"); log.debug(post2.getMsg());
