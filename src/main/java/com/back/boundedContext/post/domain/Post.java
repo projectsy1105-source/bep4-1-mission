@@ -21,11 +21,15 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @Getter
 public class Post extends BaseIdAndTime {
+
     @ManyToOne(fetch = LAZY)
     private Member author;
+
     private String title;
+
     @Column(columnDefinition = "LONGTEXT")
     private String content;
+
     @OneToMany(mappedBy = "post", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
     private List<PostComment> comments = new ArrayList<>();
 

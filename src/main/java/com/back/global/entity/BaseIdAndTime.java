@@ -24,4 +24,5 @@ public abstract class BaseIdAndTime extends BaseEntity {
     private LocalDateTime createDate;
     @LastModifiedDate
     private LocalDateTime modifyDate;
+
 }

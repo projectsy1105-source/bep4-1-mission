@@ -17,10 +17,13 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @Getter
 public class PostComment extends BaseIdAndTime {
+
     @ManyToOne(fetch = LAZY)
     private Post post;
+
     @ManyToOne(fetch = LAZY)
     private Member author;
+
     @Column(columnDefinition = "TEXT")
     private String content;
 
