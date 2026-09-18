@@ -26,7 +26,7 @@ public class CashFacade {
     }
 
     @Transactional
-    public Wallet createWallet(CashMember holder) {
+    public Wallet createWallet(MemberDto holder) {
         return cashCreateWalletUseCase.createWallet(holder);
     }
 
