@@ -4,6 +4,7 @@ import com.back.boundedContext.cash.app.CashFacade;
 import com.back.boundedContext.market.app.MarketFacade;
 import com.back.boundedContext.market.domain.MarketMember;
 import com.back.shared.cash.event.CashMemberCreatedEvent;
+import com.back.shared.market.event.MarketMemberCreatedEvent;
 import com.back.shared.member.event.MemberJoinedEvent;
 import com.back.shared.member.event.MemberModifiedEvent;
 import lombok.RequiredArgsConstructor;
@@ -31,4 +32,9 @@ public class MarketEventListener {
         marketFacade.syncMember(event.getMember());
     }
 
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void handle(MarketMemberCreatedEvent event) {
+        marketFacade.createCart(event.getMemberDto());
+    }
 }

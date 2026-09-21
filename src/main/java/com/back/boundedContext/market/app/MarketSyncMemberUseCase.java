@@ -6,6 +6,7 @@ import com.back.boundedContext.market.domain.MarketMember;
 import com.back.boundedContext.market.out.MarketMemberRepository;
 import com.back.global.eventPublisher.EventPublisher;
 import com.back.shared.cash.event.CashMemberCreatedEvent;
+import com.back.shared.market.event.MarketMemberCreatedEvent;
 import com.back.shared.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class MarketSyncMemberUseCase {
         );
 
         if (isNew) {
-            eventPublisher.publisher(new CashMemberCreatedEvent(member));
+            eventPublisher.publisher(new MarketMemberCreatedEvent(member));
         }
 
         return marketMemberRepository.save(_member);
