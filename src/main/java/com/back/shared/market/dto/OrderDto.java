@@ -1,6 +1,7 @@
 package com.back.shared.market.dto;
 
 import com.back.boundedContext.market.domain.Order;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-@AllArgsConstructor
+@AllArgsConstructor(
+        onConstructor_ = @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+)
 @Getter
 public class OrderDto {
 
