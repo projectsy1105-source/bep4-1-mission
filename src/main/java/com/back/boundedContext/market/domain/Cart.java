@@ -37,4 +37,8 @@ public class Cart extends BaseManualIdAndTime {
         return itemCount > 0;
     }
 
+    public void clearItems() {
+        this.items.clear();
+        this.itemCount = 0;
+    }
 }

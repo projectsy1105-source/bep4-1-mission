@@ -8,6 +8,7 @@ import com.back.boundedContext.cash.domain.CashMember;
 import com.back.boundedContext.cash.domain.Wallet;
 import com.back.boundedContext.market.domain.Cart;
 import com.back.boundedContext.market.domain.MarketMember;
+import com.back.boundedContext.market.domain.Order;
 import com.back.boundedContext.market.domain.Product;
 import com.back.global.global.RsData.RsData;
 import com.back.shared.member.dto.MemberDto;
@@ -26,10 +27,16 @@ public class MarketFacade {
     private final MarketSyncMemberUseCase marketSyncMemberUseCase;
     private final MarketCreateProductUseCase marketCreateProductUseCase;
     private final MarketCreateCartUseCase marketCreateCartUseCase;
+    private final MarketCreateOrderUseCase marketCreateOrderUseCase;
 
     @Transactional(readOnly = true)
     public long productsCount() {
         return marketSupport.productsCount();
+    }
+
+    @Transactional(readOnly = true)
+    public long ordersCount() {
+        return marketSupport.ordersCount();
     }
 
     @Transactional(readOnly = true)
@@ -60,6 +67,11 @@ public class MarketFacade {
     @Transactional
     public RsData<Cart> createCart(MemberDto buyer) {
         return marketCreateCartUseCase.createCart(buyer);
+    }
+
+    @Transactional
+    public RsData<Order> createOrder(Cart cart) {
+        return marketCreateOrderUseCase.createOrder(cart);
     }
 
 }
