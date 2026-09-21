@@ -5,6 +5,7 @@ import com.back.boundedContext.cash.domain.CashMember;
 import com.back.boundedContext.cash.domain.Wallet;
 import com.back.boundedContext.cash.out.CashMemberRepository;
 import com.back.boundedContext.cash.out.WalletRepository;
+import com.back.shared.market.event.MarketOrderPaymentRequestedEvent;
 import com.back.shared.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,17 @@ public class CashFacade {
 
     private final CashCreateWalletUseCase cashCreateWalletUseCase;
     private final CashSyncMemberUseCase  cashSyncMemberUseCase;
+    private final CashCompleteOrderPaymentUseCase cashCompleteOrderPaymentUseCase;
     private final CashSupport cashSupport;
 
     @Transactional
     public CashMember syncMember(MemberDto member) {
         return cashSyncMemberUseCase.syncMember(member);
+    }
+
+    @Transactional
+    public void handle(MarketOrderPaymentRequestedEvent event) {
+        cashCompleteOrderPaymentUseCase.handle(event);
     }
 
     @Transactional

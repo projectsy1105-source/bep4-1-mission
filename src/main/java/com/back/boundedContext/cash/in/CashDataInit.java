@@ -48,7 +48,6 @@ public class CashDataInit {
         user1Wallet.credit(BigDecimal.valueOf(150_000), CashLog.EventType.충전__무통장입금);
         user1Wallet.credit(BigDecimal.valueOf(100_000), CashLog.EventType.충전__무통장입금);
         user1Wallet.credit(BigDecimal.valueOf(50_000), CashLog.EventType.충전__무통장입금);
-        user1Wallet.debit(BigDecimal.valueOf(20_000), CashLog.EventType.사용__주문결제);
 
         Wallet user2Wallet = cashFacade.findWalletByHolder(user2Member).get();
 

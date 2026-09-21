@@ -11,6 +11,8 @@ import com.back.boundedContext.market.domain.MarketMember;
 import com.back.boundedContext.market.domain.Order;
 import com.back.boundedContext.market.domain.Product;
 import com.back.global.global.RsData.RsData;
+import com.back.shared.cash.event.CashOrderPaymentFailedEvent;
+import com.back.shared.cash.event.CashOrderPaymentSucceededEvent;
 import com.back.shared.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class MarketFacade {
     private final MarketCreateProductUseCase marketCreateProductUseCase;
     private final MarketCreateCartUseCase marketCreateCartUseCase;
     private final MarketCreateOrderUseCase marketCreateOrderUseCase;
+    private final MarketCompleteOrderRequestPaymentUseCase marketCompleteOrderRequestPaymentUseCase;
+    private final MarketCancelOrderRequestPaymentUseCase marketCancelOrderRequestPaymentUseCase;
 
     @Transactional(readOnly = true)
     public long productsCount() {
@@ -72,6 +76,26 @@ public class MarketFacade {
     @Transactional
     public RsData<Order> createOrder(Cart cart) {
         return marketCreateOrderUseCase.createOrder(cart);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Order> findOrderById(int orderId) {
+        return marketSupport.findOrderById(orderId);
+    }
+
+    @Transactional
+    public void requestPayment(Order order, BigDecimal pgPaymentAmount) {
+        order.requestPayment(pgPaymentAmount);
+    }
+
+    @Transactional
+    public void handle(CashOrderPaymentSucceededEvent event) {
+        marketCompleteOrderRequestPaymentUseCase.handle(event);
+    }
+
+    @Transactional
+    public void handle(CashOrderPaymentFailedEvent event) {
+        marketCancelOrderRequestPaymentUseCase.handle(event);
     }
 
 }

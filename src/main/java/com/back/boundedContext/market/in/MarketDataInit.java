@@ -41,6 +41,8 @@ public class MarketDataInit {
             self.marketBaseProducts();
             self.marketBaseCartItems();
             self.makeBaseOrders();
+            self.makeBasePaidOrders();
+            self.makeBaseFailPayOrders();
         };
     }
 
@@ -181,5 +183,21 @@ public class MarketDataInit {
         cart1.addItem(product2);
         cart1.addItem(product3);
         cart1.addItem(product4);
+    }
+
+    @Transactional
+    public void makeBasePaidOrders() {
+        Order order1 = marketFacade.findOrderById(1).get();
+        if (order1.isPaid()) return;
+
+        marketFacade.requestPayment(order1, BigDecimal.ZERO);
+    }
+
+    @Transactional
+    public void makeBaseFailPayOrders() {
+        Order order3 = marketFacade.findOrderById(3).get();
+        if (order3.isPaid()) return;
+
+        marketFacade.requestPayment(order3, BigDecimal.ZERO);
     }
 }
