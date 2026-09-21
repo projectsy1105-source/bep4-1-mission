@@ -1,0 +1,40 @@
+package com.back.boundedContext.market.app;
+
+import com.back.boundedContext.cash.domain.CashMember;
+import com.back.boundedContext.cash.out.CashMemberRepository;
+import com.back.boundedContext.market.domain.MarketMember;
+import com.back.boundedContext.market.out.MarketMemberRepository;
+import com.back.global.eventPublisher.EventPublisher;
+import com.back.shared.cash.event.CashMemberCreatedEvent;
+import com.back.shared.member.dto.MemberDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class MarketSyncMemberUseCase {
+
+    private final MarketMemberRepository marketMemberRepository;
+    private final EventPublisher eventPublisher;
+
+    public MarketMember syncMember(MemberDto member) {
+        boolean isNew = !marketMemberRepository.existsById(member.getId());
+
+        MarketMember _member = new MarketMember(
+                member.getId(),
+                member.getCreateDate(),
+                member.getModifyDate(),
+                member.getUsername(),
+                "",
+                member.getNickname(),
+                member.getActivityScore()
+        );
+
+        if (isNew) {
+            eventPublisher.publisher(new CashMemberCreatedEvent(member));
+        }
+
+        return marketMemberRepository.save(_member);
+    }
+
+}
