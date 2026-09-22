@@ -1,5 +1,6 @@
 package com.back.boundedContext.payout.app;
 
+import com.back.boundedContext.payout.domain.Payout;
 import com.back.boundedContext.payout.domain.PayoutMember;
 import com.back.boundedContext.payout.out.PayoutMemberRepository;
 import com.back.shared.market.dto.OrderDto;
@@ -22,8 +23,8 @@ public class PayoutFacade {
     }
 
     @Transactional
-    public void createPayout(MemberDto member) {
-        payoutCreatePayoutUseCase.createPayout(member);
+    public Payout createPayout(MemberDto member) {
+        return payoutCreatePayoutUseCase.createPayout(member);
     }
 
     @Transactional

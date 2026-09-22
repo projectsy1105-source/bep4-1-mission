@@ -1,24 +1,24 @@
 package com.back.boundedContext.payout.app;
 
-import com.back.boundedContext.payout.domain.Payout;
 import com.back.boundedContext.payout.domain.PayoutMember;
 import com.back.boundedContext.payout.out.PayoutMemberRepository;
 import com.back.boundedContext.payout.out.PayoutRepository;
-import com.back.shared.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
-public class PayoutCreatePayoutUseCase {
+public class PayoutSupport {
 
-    private final PayoutRepository payoutRepository;
     private final PayoutMemberRepository payoutMemberRepository;
 
-    public Payout createPayout(MemberDto payee) {
-        PayoutMember m = payoutMemberRepository.getReferenceById(payee.getId());
-        return payoutRepository.save(new Payout(m));
+    public Optional<PayoutMember> findSystemMember() {
+        return payoutMemberRepository.findByUsername("system");
+    }
+
+    public Optional<PayoutMember> findMemberById(int id) {
+        return payoutMemberRepository.findById(id);
     }
 }
