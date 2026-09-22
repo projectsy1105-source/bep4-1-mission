@@ -1,10 +1,7 @@
 package com.back.boundedContext.payout.domain;
 
 import com.back.global.entity.BaseIdAndTime;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +17,7 @@ public class PayoutItem extends BaseIdAndTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private Payout payout;
 
+    @Enumerated(EnumType.STRING)
     private PayoutEventType eventType;
 
     private String relTypeCode;

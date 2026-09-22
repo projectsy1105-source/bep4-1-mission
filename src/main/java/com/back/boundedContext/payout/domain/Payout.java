@@ -21,7 +21,7 @@ public class Payout extends BaseIdAndTime {
 
     private LocalDateTime payoutDate;
 
-    private BigDecimal amount;
+    private BigDecimal amount = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "payout", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<PayoutItem> items =  new ArrayList<>();
