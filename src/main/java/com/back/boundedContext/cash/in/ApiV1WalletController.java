@@ -20,6 +20,6 @@ public class ApiV1WalletController {
     @GetMapping("/by-holder/{holderId}")
     @Transactional(readOnly = true)
     public WalletDto findWalletByHolderId(@PathVariable int holderId) {
-        return cashFacade.findWalletByHolderId(holderId).map(WalletDto::new).get();
+        return cashFacade.findWalletByHolderId(holderId).map(Wallet::toDto).get();
     }
 }

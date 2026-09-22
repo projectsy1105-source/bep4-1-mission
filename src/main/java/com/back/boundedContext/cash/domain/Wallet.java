@@ -2,6 +2,7 @@ package com.back.boundedContext.cash.domain;
 
 import com.back.global.entity.BaseEntity;
 import com.back.global.entity.BaseManualIdAndTime;
+import com.back.shared.cash.dto.WalletDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,6 +65,10 @@ public class Wallet extends BaseManualIdAndTime {
         CashLog cashLog = new CashLog(eventType, relTypeCode, relId, holder, this, amount, balance);
         logs.add(cashLog);
         return cashLog;
+    }
+
+    public WalletDto toDto() {
+        return new WalletDto(getId(), getCreateDate(), getModifyDate(), getHolder().getId(), getHolder().getNickname(), getBalance());
     }
 
 }
