@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ public class ApiV1OrderController {
 
     public record ConfirmPaymentByTossPaymentsRequestBody (@NotBlank String paymentKey, @NotBlank String orderId, @NotNull BigDecimal amount) {}
 
+    @Transactional
     @CrossOrigin(
             origins = {
                     "https://cdpn.io",
@@ -59,7 +61,8 @@ public class ApiV1OrderController {
         if (order.getId() != Integer.parseInt(reqBody.orderId.split("-", 3)[1])) {
             throw new DomainException("400-5", "주문번호가 일치하지 않습니다");
         }
-
+        //결제 컨펌모듈이라 결제 완료인데 왜 결제 프로세스가 시작?
+        //결제 완료 바디 값은 언제처리?
         tossPaymentsService.confirmCardPayment(reqBody.paymentKey, reqBody.orderId, reqBody.amount);
         marketFacade.requestPayment(order, reqBody.amount);
 

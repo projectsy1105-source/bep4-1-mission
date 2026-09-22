@@ -1,7 +1,6 @@
 package com.back.boundedContext.cash.in;
 
 import com.back.boundedContext.cash.app.CashFacade;
-import com.back.boundedContext.cash.domain.CashMember;
 import com.back.shared.cash.event.CashMemberCreatedEvent;
 import com.back.shared.market.event.MarketOrderPaymentRequestedEvent;
 import com.back.shared.member.event.MemberJoinedEvent;
@@ -39,5 +38,5 @@ public class CashEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(MarketOrderPaymentRequestedEvent event) { cashFacade.handle(event); }
+    public void handle(MarketOrderPaymentRequestedEvent event) { cashFacade.handle(event.getOrderDto(), event.getPgPaymentAmount()); }
 }

@@ -1,18 +1,11 @@
 package com.back.boundedContext.market.app;
 
 
-import com.back.boundedContext.cash.app.CashCreateWalletUseCase;
-import com.back.boundedContext.cash.app.CashSupport;
-import com.back.boundedContext.cash.app.CashSyncMemberUseCase;
-import com.back.boundedContext.cash.domain.CashMember;
-import com.back.boundedContext.cash.domain.Wallet;
 import com.back.boundedContext.market.domain.Cart;
 import com.back.boundedContext.market.domain.MarketMember;
 import com.back.boundedContext.market.domain.Order;
 import com.back.boundedContext.market.domain.Product;
 import com.back.global.global.RsData.RsData;
-import com.back.shared.cash.event.CashOrderPaymentFailedEvent;
-import com.back.shared.cash.event.CashOrderPaymentSucceededEvent;
 import com.back.shared.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -89,13 +82,13 @@ public class MarketFacade {
     }
 
     @Transactional
-    public void handle(CashOrderPaymentSucceededEvent event) {
-        marketCompleteOrderRequestPaymentUseCase.handle(event);
+    public void completeOrderPayment(int id) {
+        marketCompleteOrderRequestPaymentUseCase.handle(id);
     }
 
     @Transactional
-    public void handle(CashOrderPaymentFailedEvent event) {
-        marketCancelOrderRequestPaymentUseCase.handle(event);
+    public void cancelOrderPayment(int id) {
+        marketCancelOrderRequestPaymentUseCase.handle(id);
     }
 
 }
