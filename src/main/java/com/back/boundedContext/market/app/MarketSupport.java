@@ -11,6 +11,7 @@ import com.back.boundedContext.market.out.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,5 +44,7 @@ public class MarketSupport {
     }
 
     public Optional<Order> findOrderById(int orderId) { return orderRepository.findById(orderId); }
+
+    public List<Order> findAllReadyForPayment() { return orderRepository.findAllReadyForPayment(); }
 
 }

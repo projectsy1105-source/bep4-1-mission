@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,6 +75,11 @@ public class MarketFacade {
     @Transactional(readOnly = true)
     public Optional<Order> findOrderById(int orderId) {
         return marketSupport.findOrderById(orderId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Order> findAllReadyForPayment() {
+        return marketSupport.findAllReadyForPayment();
     }
 
     @Transactional

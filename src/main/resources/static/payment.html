@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>토스페이먼츠 로컬 결제 테스트</title>
+  <script src="https://js.tosspayments.com/v2/standard"></script>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { max-width: 560px; margin: 48px auto; padding: 0 20px; color: #191f28; }
+    h1 { margin-bottom: 8px; font-size: 26px; }
+    .notice { margin: 0 0 28px; color: #6b7684; line-height: 1.55; }
+    form { display: grid; gap: 16px; }
+    label { display: grid; gap: 7px; font-weight: 650; }
+    input, select { box-sizing: border-box; width: 100%; padding: 12px; border: 1px solid #d1d6db; border-radius: 8px; font: inherit; }
+    button { padding: 14px; border: 0; border-radius: 8px; background: #3182f6; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+    button:disabled { background: #9bbff3; cursor: wait; }
+    #message { min-height: 24px; margin-top: 16px; color: #e03e3e; white-space: pre-wrap; }
+    .help { margin-top: 28px; padding: 16px; border-radius: 8px; background: #f2f4f6; color: #4e5968; font-size: 14px; line-height: 1.55; }
+    code { padding: 1px 4px; border-radius: 4px; background: #e5e8eb; }
+  </style>
+</head>
+<body>
+  <h1>토스페이먼츠 로컬 결제 테스트</h1>
+  <p class="notice">서버의 <code>.env</code>에 설정된 테스트 클라이언트 키로 결제 인증을 마치면, 같은 로컬 서버의 승인 API가 호출됩니다.</p>
+
+  <form id="payment-form">
+    <label>
+      결제할 주문
+      <select id="order-db-id" name="orderDbId" required disabled>
+        <option>결제 가능한 주문을 불러오는 중...</option>
+      </select>
+    </label>
+
+    <label>
+      PG 결제 금액 (원)
+      <input id="amount" name="amount" required type="number" min="1" step="1" value="1000">
+    </label>
+
+    <label>
+      주문명
+      <input id="order-name" name="orderName" required maxlength="100" value="로컬 테스트 주문">
+    </label>
+
+    <button id="payment-button" type="submit">토스 결제창 열기</button>
+  </form>
+
+  <p id="message" role="alert"></p>
+
+  <div class="help">
+    <strong>테스트 전 확인:</strong> <code>.env</code>의 <code>TOSS_PAYMENTS_CLIENT_KEY</code>와 <code>TOSS_PAYMENTS_SECRET_KEY</code>는 한 쌍인 테스트 키여야 합니다.<br>
+    이미 결제됐거나 결제 진행 중인 주문은 목록에 표시되지 않습니다.
+  </div>
+
+  <script>
+    const form = document.getElementById("payment-form");
+    const button = document.getElementById("payment-button");
+    const message = document.getElementById("message");
+    const orderSelect = document.getElementById("order-db-id");
+    const amountInput = document.getElementById("amount");
+    let clientKey = "";
+
+    async function loadClientKey() {
+      const response = await fetch("/api/v1/market/toss-payments/client-key");
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || !result?.data?.clientKey) {
+        throw new Error(result?.msg ?? "토스페이먼츠 클라이언트 키를 불러오지 못했습니다.");
+      }
+
+      clientKey = result.data.clientKey;
+    }
+
+    async function loadPayableOrders() {
+      const response = await fetch("/api/v1/market/orders/payable");
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || !Array.isArray(result?.data)) {
+        throw new Error(result?.msg ?? "결제 가능한 주문을 불러오지 못했습니다.");
+      }
+
+      orderSelect.replaceChildren();
+      if (result.data.length === 0) {
+        const option = new Option("결제 가능한 주문이 없습니다.", "");
+        orderSelect.add(option);
+        return false;
+      }
+
+      result.data.forEach((order) => {
+        const price = new Intl.NumberFormat("ko-KR").format(order.salePrice);
+        const option = new Option(
+          `주문 #${order.id} · ${order.buyerName} · ${price}원`,
+          String(order.id),
+        );
+        option.dataset.salePrice = String(order.salePrice);
+        orderSelect.add(option);
+      });
+      orderSelect.disabled = false;
+      setAmountFromSelectedOrder();
+      return true;
+    }
+
+    function setAmountFromSelectedOrder() {
+      const salePrice = Number(orderSelect.selectedOptions[0]?.dataset.salePrice);
+      if (Number.isSafeInteger(salePrice) && salePrice > 0) {
+        amountInput.value = String(salePrice);
+      }
+    }
+
+    const failedCode = new URLSearchParams(window.location.search).get("code");
+    const failedMessage = new URLSearchParams(window.location.search).get("message");
+    if (failedCode || failedMessage) {
+      message.textContent = `결제 인증이 완료되지 않았습니다. ${failedCode ?? ""} ${failedMessage ?? ""}`.trim();
+    }
+
+    button.disabled = true;
+    Promise.all([loadClientKey(), loadPayableOrders()])
+      .then(([, hasPayableOrder]) => {
+        if (hasPayableOrder) button.disabled = false;
+        else message.textContent = "결제 가능한 주문이 없습니다.";
+      })
+      .catch((error) => {
+        message.textContent = error?.message ?? "결제에 필요한 정보를 불러오지 못했습니다.";
+      });
+
+    orderSelect.addEventListener("change", setAmountFromSelectedOrder);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "";
+
+      const orderDbId = Number(orderSelect.value);
+      const amount = Number(amountInput.value);
+      const orderName = document.getElementById("order-name").value.trim();
+
+      if (!Number.isSafeInteger(orderDbId) || orderDbId < 1) {
+        message.textContent = "DB 주문 ID는 1 이상의 정수여야 합니다.";
+        return;
+      }
+      if (!Number.isSafeInteger(amount) || amount < 1) {
+        message.textContent = "PG 결제 금액은 1원 이상의 정수여야 합니다.";
+        return;
+      }
+
+      // 현재 백엔드가 order-{DB 주문 ID}-{nonce} 형식의 PG 주문번호를 검증합니다.
+      const tossOrderId = `order-${orderDbId}-${crypto.randomUUID().replaceAll("-", "")}`;
+      const customerKey = `customer-${crypto.randomUUID()}`;
+
+      try {
+        button.disabled = true;
+        button.textContent = "결제창을 여는 중...";
+
+        const tossPayments = TossPayments(clientKey);
+        const payment = tossPayments.payment({ customerKey });
+
+        await payment.requestPayment({
+          method: "CARD",
+          amount: { currency: "KRW", value: amount },
+          orderId: tossOrderId,
+          orderName,
+          successUrl: new URL("/payment-success.html", window.location.origin).href,
+          failUrl: new URL("/payment.html", window.location.origin).href,
+        });
+      } catch (error) {
+        message.textContent = error?.message ?? "결제창을 열지 못했습니다.";
+        button.disabled = false;
+        button.textContent = "토스 결제창 열기";
+      }
+    });
+  </script>
+</body>
+</html>

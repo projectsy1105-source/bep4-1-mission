@@ -38,6 +38,7 @@ custom:
   market:
     toss:
       payments:
+        clientKey: ${TOSS_PAYMENTS_CLIENT_KEY:}
         secretKey: ${TOSS_PAYMENTS_SECRET_KEY:}
     product:
       payoutRate: 90

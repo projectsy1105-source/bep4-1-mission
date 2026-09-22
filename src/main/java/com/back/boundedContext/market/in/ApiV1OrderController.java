@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/market/orders")
@@ -25,6 +26,20 @@ public class ApiV1OrderController {
     private final TossPaymentsService tossPaymentsService;
 
     public record ConfirmPaymentByTossPaymentsRequestBody (@NotBlank String paymentKey, @NotBlank String orderId, @NotNull BigDecimal amount) {}
+    public record PayableOrderResponse(int id, String buyerName, BigDecimal salePrice) {}
+
+    @GetMapping("/payable")
+    public RsData<List<PayableOrderResponse>> getPayableOrders() {
+        List<PayableOrderResponse> orders = marketFacade.findAllReadyForPayment().stream()
+                .map(order -> new PayableOrderResponse(
+                        order.getId(),
+                        order.getBuyer().getNickname(),
+                        order.getSalePrice()
+                ))
+                .toList();
+
+        return new RsData<>("200-1", "결제 가능한 주문 목록 조회 성공", orders);
+    }
 
     @Transactional
     @CrossOrigin(
