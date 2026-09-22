@@ -61,7 +61,7 @@ public class CashCompleteOrderPaymentUseCase {
                             "충전은 완료했지만 %d번 주문을 결제완료처리를 하기에는 예치금이 부족합니다.".formatted(event.getOrderDto().getId()),
                             event.getOrderDto(),
                             event.getPgPaymentAmount(),
-                            event.getPgPaymentAmount().subtract(customerWallet.getBalance())
+                            event.getOrderDto().getSalePrice().subtract(customerWallet.getBalance())
                     )
             );
         }
