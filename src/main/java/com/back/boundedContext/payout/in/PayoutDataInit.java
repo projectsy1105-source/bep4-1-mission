@@ -2,7 +2,6 @@ package com.back.boundedContext.payout.in;
 
 import com.back.boundedContext.payout.app.PayoutFacade;
 import com.back.boundedContext.payout.domain.PayoutPolicy;
-import com.back.global.global.RsData.RsData;
 import com.back.standard.ut.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.job.Job;
@@ -46,8 +45,8 @@ public class PayoutDataInit {
         return args -> {
             self.forceMakePayoutReadyCandidatesItems();
             self.collectPayoutItemsMore();
-            self.runCollectPayoutItemsAndCompletePayoutsBatchJob();
             self.completePayoutsMore();
+            self.runCollectPayoutItemsAndCompletePayoutsBatchJob();
         };
     }
 
