@@ -2,6 +2,7 @@ package com.back.boundedContext.payout.in;
 
 import com.back.boundedContext.payout.app.PayoutFacade;
 import com.back.boundedContext.payout.domain.PayoutPolicy;
+import com.back.global.global.RsData.RsData;
 import com.back.standard.ut.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.job.Job;
@@ -46,6 +47,7 @@ public class PayoutDataInit {
             self.forceMakePayoutReadyCandidatesItems();
             self.collectPayoutItemsMore();
             self.runCollectPayoutItemsBatchJob();
+            self.completePayoutsMore();
         };
     }
 
@@ -81,6 +83,14 @@ public class PayoutDataInit {
         } catch (JobExecutionAlreadyRunningException e) {
             log.error("Job execution already running", e);
         }
+    }
+
+    @Transactional
+    public void completePayoutsMore() {
+        RsData<Integer> r = payoutFacade.completePayoutsMore(4); log.debug(r.getMsg(), r.getData());
+        RsData<Integer> r1 = payoutFacade.completePayoutsMore(2); log.debug(r1.getMsg(), r1.getData());
+        RsData<Integer> r2 = payoutFacade.completePayoutsMore(2); log.debug(r2.getMsg(), r2.getData());
+
     }
 
 }

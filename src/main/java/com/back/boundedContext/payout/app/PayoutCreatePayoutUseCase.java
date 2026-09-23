@@ -17,8 +17,8 @@ public class PayoutCreatePayoutUseCase {
     private final PayoutRepository payoutRepository;
     private final PayoutMemberRepository payoutMemberRepository;
 
-    public Payout createPayout(MemberDto payee) {
-        PayoutMember m = payoutMemberRepository.getReferenceById(payee.getId());
+    public Payout createPayout(int payeeId) {
+        PayoutMember m = payoutMemberRepository.getReferenceById(payeeId);
         return payoutRepository.save(new Payout(m));
     }
 }
